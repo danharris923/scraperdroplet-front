@@ -40,16 +40,16 @@ export async function GET(
         brand: data.brand || null,
         store: data.store || 'Unknown',
         source: data.source || 'deals',
-        image_url: data.image_url || null,
-        current_price: data.current_price,
+        image_url: data.image_blob_url || data.image_url || null,
+        current_price: data.current_price || data.price,
         original_price: data.original_price,
         discount_percent: data.discount_percent,
         category: data.category || null,
         region: data.region || null,
-        affiliate_url: data.url || data.affiliate_url || '#',
+        affiliate_url: data.affiliate_url || data.url || '#',
         is_active: data.is_active !== false,
-        first_seen_at: data.created_at,
-        last_seen_at: data.updated_at || data.created_at,
+        first_seen_at: data.date_added || data.created_at,
+        last_seen_at: data.date_updated || data.updated_at || data.created_at,
         description: data.description || undefined,
         price_history: [],
       }
@@ -84,19 +84,23 @@ export async function GET(
         )
       }
 
+      // Get image from images array or thumbnail_url
+      const images = data.images || []
+      const imageUrl = images.length > 0 ? images[0] : (data.thumbnail_url && !data.thumbnail_url.includes('LogoMobile') ? data.thumbnail_url : null)
+
       product = {
         id: `retailer_${data.id}`,
         title: data.title || '',
         brand: data.brand || null,
-        store: data.store || 'Unknown',
-        source: data.source || 'retailer',
-        image_url: data.image_url || null,
+        store: data.extra_data?.source || 'Unknown',
+        source: data.extra_data?.source || 'retailer',
+        image_url: imageUrl,
         current_price: data.current_price,
         original_price: data.original_price,
-        discount_percent: data.discount_percent,
-        category: data.category || null,
-        region: data.region || null,
-        affiliate_url: data.url || data.affiliate_url || '#',
+        discount_percent: data.sale_percentage || data.discount_percent,
+        category: data.retailer_category || null,
+        region: data.extra_data?.region || null,
+        affiliate_url: data.affiliate_url || data.retailer_url || '#',
         is_active: data.is_active !== false,
         first_seen_at: data.first_seen_at,
         last_seen_at: data.last_seen_at || data.first_seen_at,

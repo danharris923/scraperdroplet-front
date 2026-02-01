@@ -84,35 +84,41 @@ export async function GET(request: NextRequest) {
       brand: d.brand || null,
       store: d.store || 'Unknown',
       source: d.source || 'deals',
-      image_url: d.image_url || null,
-      current_price: d.current_price,
+      image_url: d.image_blob_url || d.image_url || null,
+      current_price: d.current_price || d.price,
       original_price: d.original_price,
       discount_percent: d.discount_percent,
       category: d.category || null,
       region: d.region || null,
-      affiliate_url: d.url || d.affiliate_url || '#',
+      affiliate_url: d.affiliate_url || d.url || '#',
       is_active: d.is_active !== false,
-      first_seen_at: d.created_at,
-      last_seen_at: d.updated_at || d.created_at,
+      first_seen_at: d.date_added || d.created_at,
+      last_seen_at: d.date_updated || d.updated_at || d.created_at,
     }))
 
-    const retailerProducts: Product[] = (retailerResult.data || []).map((r) => ({
-      id: `retailer_${r.id}`,
-      title: r.title || '',
-      brand: r.brand || null,
-      store: r.store || 'Unknown',
-      source: r.source || 'retailer',
-      image_url: r.image_url || null,
-      current_price: r.current_price,
-      original_price: r.original_price,
-      discount_percent: r.discount_percent,
-      category: r.category || null,
-      region: r.region || null,
-      affiliate_url: r.url || r.affiliate_url || '#',
-      is_active: r.is_active !== false,
-      first_seen_at: r.first_seen_at,
-      last_seen_at: r.last_seen_at || r.first_seen_at,
-    }))
+    const retailerProducts: Product[] = (retailerResult.data || []).map((r) => {
+      // Get image from images array or thumbnail_url
+      const images = r.images || []
+      const imageUrl = images.length > 0 ? images[0] : (r.thumbnail_url && !r.thumbnail_url.includes('LogoMobile') ? r.thumbnail_url : null)
+
+      return {
+        id: `retailer_${r.id}`,
+        title: r.title || '',
+        brand: r.brand || null,
+        store: r.extra_data?.source || 'Unknown',
+        source: r.extra_data?.source || 'retailer',
+        image_url: imageUrl,
+        current_price: r.current_price,
+        original_price: r.original_price,
+        discount_percent: r.sale_percentage || r.discount_percent,
+        category: r.retailer_category || null,
+        region: r.extra_data?.region || null,
+        affiliate_url: r.affiliate_url || r.retailer_url || '#',
+        is_active: r.is_active !== false,
+        first_seen_at: r.first_seen_at,
+        last_seen_at: r.last_seen_at || r.first_seen_at,
+      }
+    })
 
     // Combine and sort
     let allProducts = [...deals, ...retailerProducts]
