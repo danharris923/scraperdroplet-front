@@ -88,12 +88,33 @@ export async function GET(
       const images = data.images || []
       const imageUrl = images.length > 0 ? images[0] : (data.thumbnail_url && !data.thumbnail_url.includes('LogoMobile') ? data.thumbnail_url : null)
 
+      // Determine store name from multiple sources
+      let store = 'Unknown'
+      let sourceLabel = 'retailer'
+
+      if (data.retailer_sku && data.retailer_sku.includes('_')) {
+        store = data.retailer_sku.split('_')[0]
+        sourceLabel = 'Flipp'
+      } else if (data.affiliate_url?.includes('flipp.com')) {
+        sourceLabel = 'Flipp'
+      } else if (data.extra_data?.source) {
+        store = data.extra_data.source
+        sourceLabel = data.extra_data.source
+      } else if (data.retailer_url) {
+        try {
+          const domain = new URL(data.retailer_url).hostname.replace('www.', '').split('.')[0]
+          store = domain.charAt(0).toUpperCase() + domain.slice(1)
+        } catch {
+          // Invalid URL
+        }
+      }
+
       product = {
         id: `retailer_${data.id}`,
         title: data.title || '',
         brand: data.brand || null,
-        store: data.extra_data?.source || 'Unknown',
-        source: data.extra_data?.source || 'retailer',
+        store,
+        source: sourceLabel,
         image_url: imageUrl,
         current_price: data.current_price,
         original_price: data.original_price,

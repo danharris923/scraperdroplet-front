@@ -101,12 +101,40 @@ export async function GET(request: NextRequest) {
       const images = r.images || []
       const imageUrl = images.length > 0 ? images[0] : (r.thumbnail_url && !r.thumbnail_url.includes('LogoMobile') ? r.thumbnail_url : null)
 
+      // Determine store name from multiple sources
+      let store = 'Unknown'
+      let source = 'retailer'
+
+      // Try retailer_sku first (e.g., "Sport Chek_xxx" → "Sport Chek")
+      if (r.retailer_sku && r.retailer_sku.includes('_')) {
+        store = r.retailer_sku.split('_')[0]
+        source = 'Flipp'
+      }
+      // Check if it's a Flipp URL
+      else if (r.affiliate_url?.includes('flipp.com')) {
+        source = 'Flipp'
+      }
+      // Check extra_data.source
+      else if (r.extra_data?.source) {
+        store = r.extra_data.source
+        source = r.extra_data.source
+      }
+      // Check retailer_url domain
+      else if (r.retailer_url) {
+        try {
+          const domain = new URL(r.retailer_url).hostname.replace('www.', '').split('.')[0]
+          store = domain.charAt(0).toUpperCase() + domain.slice(1)
+        } catch {
+          // Invalid URL, keep Unknown
+        }
+      }
+
       return {
         id: `retailer_${r.id}`,
         title: r.title || '',
         brand: r.brand || null,
-        store: r.extra_data?.source || 'Unknown',
-        source: r.extra_data?.source || 'retailer',
+        store,
+        source,
         image_url: imageUrl,
         current_price: r.current_price,
         original_price: r.original_price,
