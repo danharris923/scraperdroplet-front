@@ -1,0 +1,272 @@
+@import './variables.scss';
+@import '~@coreui/coreui/scss/coreui';
+
+html,
+body {
+  min-height: 100vh;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.body {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+.main {
+  flex-grow: 1;
+  padding: 1.5rem;
+  background-color: $body-bg;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 256px;
+  min-height: 100vh;
+  background: $sidebar-bg;
+  transition: width 0.3s;
+
+  &.sidebar-narrow {
+    width: 56px;
+  }
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-decoration: none;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 0.5rem 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: $sidebar-nav-link-color;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    color: $sidebar-nav-link-hover-color;
+    background: $sidebar-nav-link-active-bg;
+  }
+
+  &.active {
+    color: $sidebar-nav-link-active-color;
+    background: $sidebar-nav-link-active-bg;
+  }
+
+  .nav-icon {
+    margin-right: 1rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 1rem;
+  background: $header-bg;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+// Card styling
+.card {
+  box-shadow: $card-box-shadow;
+  border: none;
+}
+
+// Stats widgets
+.stats-widget {
+  .stats-value {
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .stats-label {
+    font-size: 0.875rem;
+    color: $secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// Product card
+.product-card {
+  transition: transform 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .product-image {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: #f8f9fa;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .discount-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .origin-badge {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0.5rem;
+  }
+
+  .region-flag {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    width: 24px;
+    height: 18px;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Filter sidebar
+.filter-sidebar {
+  background: #fff;
+  border-radius: $card-border-radius;
+  box-shadow: $card-box-shadow;
+
+  .filter-section {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .filter-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+    color: $dark;
+  }
+}
+
+// Price chart
+.price-chart-container {
+  .recharts-cartesian-axis-tick-value {
+    font-size: 0.75rem;
+  }
+}
+
+// Log viewer
+.log-viewer {
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 0.8rem;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  padding: 1rem;
+  border-radius: $card-border-radius;
+  max-height: 400px;
+  overflow-y: auto;
+
+  .log-line {
+    padding: 0.125rem 0;
+
+    &.log-error {
+      color: #f44747;
+    }
+
+    &.log-warning {
+      color: #ff9800;
+    }
+
+    &.log-success {
+      color: #4caf50;
+    }
+
+    &.log-info {
+      color: #2196f3;
+    }
+  }
+}
+
+// Table improvements
+.table-responsive {
+  .table {
+    margin-bottom: 0;
+
+    th {
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      color: $secondary;
+      border-bottom-width: 2px;
+    }
+  }
+}
+
+// Progress bars for gauges
+.gauge-container {
+  .gauge-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .progress {
+    height: 0.625rem;
+  }
+}
+
+// Badge improvements
+.badge {
+  font-weight: 500;
+}
+
+// Loading spinner
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
