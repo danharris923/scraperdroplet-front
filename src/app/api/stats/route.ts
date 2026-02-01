@@ -32,7 +32,7 @@ export async function GET() {
 
     try {
       const dropletResponse = await fetch(
-        `${process.env.DROPLET_API_URL || 'http://146.190.240.167:8080'}/scrapers`,
+        `${process.env.DROPLET_API_URL || 'http://146.190.240.167:8080'}/health/scrapers`,
         { cache: 'no-store' }
       )
       if (dropletResponse.ok) {

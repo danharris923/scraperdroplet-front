@@ -26,7 +26,7 @@ async function postToDroplet<T>(path: string, body?: object): Promise<T> {
 export function useScrapers() {
   return useQuery<ScraperStatus[]>({
     queryKey: ['scrapers'],
-    queryFn: () => fetchFromDroplet<ScraperStatus[]>('scrapers'),
+    queryFn: () => fetchFromDroplet<ScraperStatus[]>('health/scrapers'),
     refetchInterval: 30000,
   })
 }
@@ -44,7 +44,7 @@ export function useTriggerScraper() {
 
   return useMutation({
     mutationFn: (scraperName: string) =>
-      postToDroplet(`scrapers/${scraperName}/trigger`),
+      postToDroplet(`trigger/${scraperName}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['scrapers'] })
     },
