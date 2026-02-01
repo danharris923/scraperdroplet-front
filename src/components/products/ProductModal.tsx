@@ -111,7 +111,7 @@ export default function ProductModal({ productId, onClose }: ProductModalProps) 
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <CIcon icon={cilExternalLink} className="me-2" />
+                <CIcon icon={cilExternalLink as unknown as string[]} className="me-2" />
                 View Deal
               </CButton>
             </CCol>

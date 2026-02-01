@@ -20,7 +20,7 @@ export default function UptimeDisplay({ health }: UptimeDisplayProps) {
         <strong>Uptime</strong>
       </CCardHeader>
       <CCardBody className="text-center">
-        <CIcon icon={cilClock} size="3xl" className="text-primary mb-3" />
+        <CIcon icon={cilClock as unknown as string[]} size="3xl" className="text-primary mb-3" />
         <h3 className="mb-0">{uptime}</h3>
         {days > 0 && (
           <div className="text-muted small mt-1">

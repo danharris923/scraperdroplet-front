@@ -23,7 +23,7 @@ export default function AppSidebar() {
               href={item.to}
               className={`nav-link ${isActive ? 'active' : ''}`}
             >
-              <CIcon icon={item.icon} className="nav-icon" />
+              <CIcon icon={item.icon as unknown as string[]} className="nav-icon" />
               <span>{item.name}</span>
               {item.badge && (
                 <CBadge color={item.badge.color} className="ms-auto">

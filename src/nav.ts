@@ -3,7 +3,7 @@ import { cilSpeedometer, cilCart, cilStorage, cilBasket } from '@coreui/icons'
 export interface NavItem {
   name: string
   to: string
-  icon: number[]
+  icon: string[]
   badge?: {
     color: string
     text: string

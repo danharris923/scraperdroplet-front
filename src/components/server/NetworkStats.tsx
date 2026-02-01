@@ -20,7 +20,7 @@ export default function NetworkStats({ health }: NetworkStatsProps) {
         <CRow>
           <CCol xs={6}>
             <div className="d-flex align-items-center">
-              <CIcon icon={cilArrowBottom} className="text-success me-2" />
+              <CIcon icon={cilArrowBottom as unknown as string[]} className="text-success me-2" />
               <div>
                 <div className="text-muted small">Download</div>
                 <div className="fw-semibold">
@@ -31,7 +31,7 @@ export default function NetworkStats({ health }: NetworkStatsProps) {
           </CCol>
           <CCol xs={6}>
             <div className="d-flex align-items-center">
-              <CIcon icon={cilArrowTop} className="text-info me-2" />
+              <CIcon icon={cilArrowTop as unknown as string[]} className="text-info me-2" />
               <div>
                 <div className="text-muted small">Upload</div>
                 <div className="fw-semibold">

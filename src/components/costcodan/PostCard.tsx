@@ -40,7 +40,7 @@ export default function PostCard({ post }: PostCardProps) {
             rel="noopener noreferrer"
             className="btn btn-sm btn-outline-primary mt-2 w-100"
           >
-            <CIcon icon={cilExternalLink} className="me-1" />
+            <CIcon icon={cilExternalLink as unknown as string[]} className="me-1" />
             View on Facebook
           </a>
         )}

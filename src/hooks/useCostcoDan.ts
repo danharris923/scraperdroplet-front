@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabase'
+import { getSupabase } from '@/lib/supabase'
 import type { CostcoDanPost } from '@/types'
 
 export function useCostcoDanPosts(limit = 20) {
   return useQuery<CostcoDanPost[]>({
     queryKey: ['costcodan-posts', limit],
     queryFn: async () => {
+      const supabase = getSupabase()
       const { data, error } = await supabase
         .from('costco')
         .select('*')

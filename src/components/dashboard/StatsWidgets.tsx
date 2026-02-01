@@ -8,7 +8,7 @@ import { useDashboardStats } from '@/hooks/useStats'
 interface StatCardProps {
   title: string
   value: string | number
-  icon: number[]
+  icon: string | string[] | number[]
   color: string
 }
 
@@ -20,7 +20,7 @@ function StatCard({ title, value, icon, color }: StatCardProps) {
           className={`p-3 me-3 rounded bg-${color}`}
           style={{ opacity: 0.15 }}
         >
-          <CIcon icon={icon} size="xl" className={`text-${color}`} />
+          <CIcon icon={icon as unknown as string[]} size="xl" className={`text-${color}`} />
         </div>
         <div>
           <div className="stats-value">{value}</div>
