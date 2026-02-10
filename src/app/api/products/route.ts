@@ -51,6 +51,28 @@ export async function GET(request: NextRequest) {
       dealsQuery = dealsQuery.lte('current_price', maxPrice)
     }
 
+    // Query costco_products table
+    let costcoQuery = supabase
+      .from('costco_products')
+      .select('*', { count: 'exact' })
+
+    if (search) {
+      costcoQuery = costcoQuery.ilike('name', `%${search}%`)
+    }
+    if (stores.length > 0 && !stores.includes('Costco')) {
+      // If filtering by store and Costco isn't in the list, skip
+      costcoQuery = costcoQuery.eq('id', -1) // no results
+    }
+    if (categories.length > 0) {
+      costcoQuery = costcoQuery.in('category', categories)
+    }
+    if (maxPrice !== null) {
+      costcoQuery = costcoQuery.lte('current_price', maxPrice)
+    }
+    if (regions.length > 0) {
+      costcoQuery = costcoQuery.in('region', regions)
+    }
+
     // Query retailer_products table
     let retailerQuery = supabase
       .from('retailer_products')
@@ -72,9 +94,10 @@ export async function GET(request: NextRequest) {
       retailerQuery = retailerQuery.lte('current_price', maxPrice)
     }
 
-    const [dealsResult, retailerResult] = await Promise.all([
+    const [dealsResult, retailerResult, costcoResult] = await Promise.all([
       dealsQuery.order(sortBy === 'discount_percent' ? 'discount_percent' : 'created_at', { ascending: sortOrder }),
       retailerQuery.order(sortBy === 'discount_percent' ? 'discount_percent' : 'first_seen_at', { ascending: sortOrder }),
+      costcoQuery.order(sortBy === 'discount_percent' ? 'discount_percent' : 'last_updated_at', { ascending: sortOrder }),
     ])
 
     // Normalize and combine results
@@ -148,8 +171,26 @@ export async function GET(request: NextRequest) {
       }
     })
 
+    const costcoProducts: Product[] = (costcoResult.data || []).map((c) => ({
+      id: `costco_${c.id}`,
+      title: c.name || '',
+      brand: null,
+      store: 'Costco',
+      source: c.source || 'cocopricetracker',
+      image_url: c.image_url || null,
+      current_price: c.current_price,
+      original_price: null,
+      discount_percent: null,
+      category: c.category || null,
+      region: c.region || null,
+      affiliate_url: c.item_id ? `https://www.costco.ca/CatalogSearch?keyword=${c.item_id}` : '#',
+      is_active: c.is_active !== false,
+      first_seen_at: c.first_seen_at,
+      last_seen_at: c.last_updated_at || c.first_seen_at,
+    }))
+
     // Combine and sort
-    let allProducts = [...deals, ...retailerProducts]
+    let allProducts = [...deals, ...retailerProducts, ...costcoProducts]
 
     if (sortBy === 'discount_percent') {
       allProducts.sort((a, b) => {

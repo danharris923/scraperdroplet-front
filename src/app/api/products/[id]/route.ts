@@ -145,6 +145,56 @@ export async function GET(
           is_on_sale: h.is_on_sale || false,
         }))
       }
+    } else if (source === 'costco') {
+      const { data, error } = await supabase
+        .from('costco_products')
+        .select('*')
+        .eq('id', rawId)
+        .single()
+
+      if (error || !data) {
+        return NextResponse.json(
+          { error: 'Product not found' },
+          { status: 404 }
+        )
+      }
+
+      product = {
+        id: `costco_${data.id}`,
+        title: data.name || '',
+        brand: null,
+        store: 'Costco',
+        source: data.source || 'cocopricetracker',
+        image_url: data.image_url || null,
+        current_price: data.current_price,
+        original_price: null,
+        discount_percent: null,
+        category: data.category || null,
+        region: data.region || null,
+        affiliate_url: data.item_id ? `https://www.costco.ca/CatalogSearch?keyword=${data.item_id}` : '#',
+        is_active: data.is_active !== false,
+        first_seen_at: data.first_seen_at,
+        last_seen_at: data.last_updated_at || data.first_seen_at,
+        description: undefined,
+        price_history: [],
+      }
+
+      // Get price history from costco_price_history
+      const { data: historyData } = await supabase
+        .from('costco_price_history')
+        .select('*')
+        .eq('product_id', rawId)
+        .order('recorded_at', { ascending: true })
+        .limit(90)
+
+      if (historyData) {
+        priceHistory = historyData.map((h) => ({
+          price: h.price,
+          original_price: null,
+          scraped_at: h.recorded_at,
+          is_on_sale: false,
+        }))
+      }
     }
 
     if (!product) {
